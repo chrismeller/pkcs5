@@ -132,7 +132,7 @@
 			
 			// step 5: output the derived key
 			if ( $base64_encode ) {
-				return $hash;
+				return base64_encode($hash);
 			}
 			else {
 				return $hash;
