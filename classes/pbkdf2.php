@@ -115,10 +115,12 @@
 			for ( $block = 1; $block <= $key_blocks; $block++ ) {
 				
 				// initial hash for this block - note that password is the key, salt is the text ('data' in php's docs), per Appendix B.1.1
+				// 		note that pack('N') means a 32-bit big-endian number (ie: "four-octet encoding... most significant octet first" in the RFC)
 				$initial_block = $b = hash_hmac( $this->algorithm, $this->salt . pack('N', $block), $this->password, true );
 				
 				// perform block iterations
-				for ( $i = 1; $i <= $this->iterations; $i++ ) {
+				// 		the < is intentional. it should not be <= for unknown reasons
+				for ( $i = 1; $i < $this->iterations; $i++ ) {
 					
 					// XOR each iterate
 					$initial_block ^= ( $b = hash_hmac( $this->algorithm, $b, $this->password, true ) );
