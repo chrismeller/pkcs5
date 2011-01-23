@@ -97,8 +97,11 @@
 			// first, see how long the hash will be for the selected algorithm
 			$hash_length = strlen( hash( $this->algorithm, null, true ) );
 			
-			// step 1: if the requested length is longer than the hash length, throw an error
-			if ( $this->length > $hash_length ) {
+			// what is the largest key we could generate with this algorithm?
+			$max_length = ( pow(2, 23) - 1 ) * $hash_length;
+			
+			// step 1: if the requested length is longer than the length of the key we can generate with this algorithm, throw an error
+			if ( $this->length > $max_length ) {
 				throw new LengthException('derived key too long');
 			}
 			
