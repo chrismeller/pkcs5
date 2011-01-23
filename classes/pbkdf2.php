@@ -90,9 +90,9 @@
 		 * 		http://www.rsa.com/rsalabs/node.asp?id=2127
 		 * The steps indicated are those specified in the spec, section 5.2: PBKDF2 
 		 * 
-		 * @param boolean $base64_encode Return a textual base64-encoded string instead of binary data. Good for storing in a varchar field instead of a blob.
+		 * @param boolean $as_hex Return the hex-encoded string representation instead of binary data. Good for storing in a database as varchar instead of blob.
 		 */
-		public function hash ( $base64_encode = true ) {
+		public function hash ( $as_hex = true ) {
 			
 			// first, see how long the hash will be for the selected algorithm
 			$hash_length = strlen( hash( $this->algorithm, null, true ) );
@@ -136,8 +136,8 @@
 			$hash = substr( $derived_key, 0, $this->length );
 			
 			// step 5: output the derived key
-			if ( $base64_encode ) {
-				return base64_encode($hash);
+			if ( $as_hex ) {
+				return bin2hex($hash);
 			}
 			else {
 				return $hash;
