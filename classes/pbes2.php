@@ -1,5 +1,7 @@
 <?php
 
+	namespace PKCS5;
+
 	class PBES2 {
 		
 		public $iterations = 1000;
