@@ -6,7 +6,7 @@
 		
 		public $iterations = 1000;
 		public $length = 32;
-		public $algorithm = 'sha256';
+		public $algorithm = 'sha1';
 		
 		private $password;
 		private $salt;
