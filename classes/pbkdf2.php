@@ -93,8 +93,10 @@
 		 * The steps indicated are those specified in the spec, section 5.2: PBKDF2 
 		 * 
 		 * @param boolean $as_hex Return the hex-encoded string representation instead of binary data. Good for storing in a database as varchar instead of blob.
+		 * @param  boolean $exact_string Should the hash be a string of the exact $length specified (new method), or should the binary blob be trimmed to $length, then converted to hex (original method), as per the standard.
+		 * @return binary|string The computed hash, either in binary format or as a hexadecimal string, depending on $as_hex.
 		 */
-		public function hash ( $as_hex = true ) {
+		public function hash ( $as_hex = true, $exact_string = true ) {
 			
 			// first, see how long the hash will be for the selected algorithm
 			$hash_length = strlen( hash( $this->algorithm, null, true ) );
@@ -134,14 +136,29 @@
 				
 			}
 			
-			// step 4: extract the first $length characters of the derived key
-			$hash = substr( $derived_key, 0, $this->length );
-			
-			// step 5: output the derived key
-			if ( $as_hex ) {
-				return bin2hex($hash);
+			if ( $as_hex && $exact_string ) {
+
+				// step 4: extract the first $length characters of the derived key
+				// note that this kind of breaks from the standard a bit, but if you're outputting as a hex string you expect to actually get back a string of the specified length, you don't care how long the original binary blob was
+				$hash = bin2hex( $derived_key );
+				$hash = substr( $hash, 0, $this->length );
+
+				// step 5: output the derived key
+				return $hash;
+			}
+			else if ( $as_hex ) {
+
+				$hash = substr( $derived_key, 0, $this->length );
+
+				return bin2hex( $hash );
+
 			}
 			else {
+
+				// step 4: extract the first $length characters of the derived key
+				$hash = substr( $derived_key, 0, $this->length );
+
+				// step 5: output the derived key
 				return $hash;
 			}
 			
